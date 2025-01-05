@@ -22,10 +22,11 @@ class Source(models.Model):
 class News(models.Model):
     source  = models.ForeignKey(Source, on_delete=models.CASCADE, related_name='source_news')
     title = models.CharField(max_length=255)
-    sumary = models.TextField(null=True)
+    summary = models.TextField(null=True)
     content = models.TextField(null=True)
     photo = models.ImageField(upload_to='item_photos/', null=True)
     url = models.URLField()
+    view = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = 'News'
