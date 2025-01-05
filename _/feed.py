@@ -3,30 +3,49 @@ import feedparser
 rss_url_1= "https://feeds.bbci.co.uk/news/world/rss.xml"
 rss_url_2 = "http://rss.cnn.com/rss/edition_world.rss"
 
-list_of_rss_urls = []
+list_of_rss_urls = [rss_url_1, rss_url_2]
 
-feed = feedparser.parse(rss_url_2)
 
-if feed.status == 200:
-    for entry in feed.entries:
-        # print(entry.keys())
+while True:
+    for feed_url in list_of_rss_urls:
+        feed = feedparser.parse(feed_url)
 
-        title = entry.get("title", "")
-        summary = entry.get("summary", "")
+        if feed.status == 200:
+            for entry in feed.entries:
+                # print(entry.keys())
 
-        if entry.get("content", ""):
-            content =  entry.get('content', '')
+                title = entry.get("title", "")
+                summary = entry.get("summary", "")
 
-        if entry.get("media_content", ""):
-            image = entry.get("media_content", "")[0]
+                if "content" in entry.keys():
+                    content =  entry.get("content", "")
+                else:
+                    content = None
 
-        link = "link_of_item",entry.get("link", "")
-        
-        source_name = feed.feed.get('title', '')
-        source_link = feed.feed.get('link', '')
-        source_language = feed.feed.get('language', '')
+                if entry.get("media_content", ""):
+                    image = entry.get("media_content", "")[0]
+                else:
+                    image = None
 
-        source_icon = feed.feed.image.get('url', '')
+                link = "link_of_item",entry.get("link", "")
+                
+                source_name = feed.feed.get('title', '')
+                source_link = feed.feed.get('link', '')
+                source_language = feed.feed.get('language', '')
 
-else:
-    print('smth went wrong')
+                source_icon = feed.feed.image.get('url', '')
+
+                print('title', title)
+                print('summary', summary)
+                print('content', content)
+                print('image', image)
+                print('link', link)
+                print('source_name', source_name)
+                print('source_link', source_link)
+                print('source_language', source_language)
+                print('source_icon', source_icon)
+
+                print("*"*50)
+
+        else:
+            print('smth went wrong')
