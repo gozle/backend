@@ -1,12 +1,34 @@
 from django.db import models
 
 # Create your models here.
-class RssModel(models.Model):
-    title_tm = models.CharField(max_length=255)
-    title_en = models.CharField(max_length=255)
-    title_ru = models.CharField(max_length=255)
+
+class Source(models.Model):
+    LANG_CHOICES = [
+        ('ru', 'RU'),
+        ('en', "EN"),
+        ('tm', 'TM')
+    ]
+    name = models.CharField(max_length=255)
+    link = models.URLField()
+    language = models.CharField(max_length=3 , choices=LANG_CHOICES)
+    icon = models.ImageField(upload_to='source_icon/', null=True)
+
+    class Meta:
+        verbose_name_plural = 'Source'
+
+    def __str__(self):
+        return self.name
+
+class News(models.Model):
+    source  = models.ForeignKey(Source, on_delete=models.CASCADE, related_name='source_news')
+    title = models.CharField(max_length=255)
+    sumary = models.TextField(null=True)
+    content = models.TextField(null=True)
+    photo = models.ImageField(upload_to='item_photos/', null=True)
     url = models.URLField()
-    photo = models.ImageField(upload_to='downloads/', null=True)
-    descriptoin_tm = models.TextField()
-    descriptoin_en = models.TextField()
-    descriptoin_ru = models.TextField()
+
+    class Meta:
+        verbose_name_plural = 'News'
+
+    def __str__(self):
+        return self.title

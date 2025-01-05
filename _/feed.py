@@ -3,6 +3,9 @@ import requests
 import time
 
 
+rss_url_1 = "http://rss.cnn.com/rss/edition_world.rss"
+rss_url_2 = "https://feeds.bbci.co.uk/news/world/rss.xml"
+
 list_of_rss_urls = [rss_url_1, rss_url_2]
 
 def download_image(url, path= './'):
