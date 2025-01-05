@@ -1,7 +1,5 @@
 import feedparser
 
-rss_url_1= "https://feeds.bbci.co.uk/news/world/rss.xml"
-rss_url_2 = "http://rss.cnn.com/rss/edition_world.rss"
 
 list_of_rss_urls = [rss_url_1, rss_url_2]
 
