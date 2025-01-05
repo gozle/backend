@@ -12,6 +12,7 @@ class Source(models.Model):
     link = models.URLField()
     language = models.CharField(max_length=3 , choices=LANG_CHOICES)
     icon = models.ImageField(upload_to='source_icon/', null=True)
+    rss_url = models.URLField()
 
     class Meta:
         verbose_name_plural = 'Source'
@@ -21,6 +22,7 @@ class Source(models.Model):
 
 class News(models.Model):
     source  = models.ForeignKey(Source, on_delete=models.CASCADE, related_name='source_news')
+    guid = models.CharField(max_length=255, unique=True)
     title = models.CharField(max_length=255)
     summary = models.TextField(null=True)
     content = models.TextField(null=True)
