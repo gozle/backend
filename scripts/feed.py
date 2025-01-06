@@ -8,6 +8,8 @@ import django
 from django.conf import settings
 from pytz import UTC
 from datetime import datetime
+from email.utils import parsedate_to_datetime
+
 
 # Add the project root directory to sys.path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -48,12 +50,13 @@ while True:
         source = feed_url
         if feed.status == 200:
             for entry in feed.entries:
-                # print(entry.keys())
-
+                # print(a, entry.keys())
 
                 pubDate = entry.get("published", "")
-                parsed_datetime = datetime.strptime(pubDate, '%a, %d %b %Y %H:%M:%S %Z')
-                formatted_datetime = parsed_datetime.replace(tzinfo=UTC).strftime('%Y-%m-%d %H:%M:%S%z')
+                if pubDate:
+                    parsed_datetime = parsedate_to_datetime(pubDate)
+                else:
+                    parsed_datetime=None
 
                 guid = entry.get('id', '')
                 title = entry.get("title", "")
@@ -64,21 +67,35 @@ while True:
                 else:
                     content = ''
 
-                if entry.get("media_content", ""):
-                    image = entry.get("media_content", "")[0].get("url", None)
-                else:
-                    image = None
-
                 link = entry.get("link", "")
-                
-                if image:
-                    photo_db = download_image(image)
+
+                # if entry.get("media_content", ""):
+                #     image = entry.get("media_content", "")[0].get("url", None)
+                # elif entry.get("media_thumbnail", ""):
+                #     image = entry.get("media_thumbnail", "").get("url", None)
+                # else:
+                #     image = None
+
+                media_content = entry.get("media_content", [])
+                media_thumbnail = entry.get("media_thumbnail", [])
+
+                if media_content:
+                    image_url = media_content[0].get("url", "")
+                elif media_thumbnail:
+                    image_url = media_thumbnail[0].get("url", "")
+                else:
+                    image_url = None
+
+                if image_url:
+                    photo_db = download_image(image_url)
+                else:
+                    photo_db = None
 
 
-                # FOR NEWS
+                # # FOR NEWS
                 if not News.objects.filter(source=source, guid=guid).first():
                     news_item = News.objects.create(source=source, guid=guid, title=title, summary=summary, content=content,
-                    photo = photo_db, url=link, pubDate=formatted_datetime)
+                    photo = photo_db, url=link, pubDate=parsed_datetime)
                     news_item.save()
 
 

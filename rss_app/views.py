@@ -7,9 +7,9 @@ from .pagination import CustomPageNumberPagination
 
 @api_view(['GET'])
 def newsList(request):
-    news = News.objects.all()
-    popular_news = News.objects.order_by('view')
-    latest_news = News.objects.order_by('created_at')  # pubDate
+    news = News.objects.order_by('-pubDate')
+    popular_news = News.objects.order_by('-view')
+    latest_news = News.objects.order_by('-pubDate')  # pubDate
 
     paginator = CustomPageNumberPagination()  # query param => page_size
 

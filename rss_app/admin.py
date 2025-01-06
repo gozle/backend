@@ -18,7 +18,7 @@ class SourceAdmin(admin.ModelAdmin):
 
 class NewsAdmin(admin.ModelAdmin):
     list_display_links = ['photo_thumbnail', 'source',]
-    list_display = ['photo_thumbnail','source', 'guid', 'title', 'pubDate', 'created_at','view']
+    list_display = ['photo_thumbnail','source', 'title', 'pubDate', 'created_at','view']
     order_by = ['title']
 
     def photo_thumbnail(self, obj):
