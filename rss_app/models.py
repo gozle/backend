@@ -29,6 +29,7 @@ class News(models.Model):
     photo = models.ImageField(upload_to='item_photos/', null=True)
     url = models.URLField()
     view = models.IntegerField(default=0)
+    pubDate = models.DateTimeField()
 
     class Meta:
         verbose_name_plural = 'News'

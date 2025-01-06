@@ -6,6 +6,8 @@ import os
 import sys
 import django
 from django.conf import settings
+from pytz import UTC
+from datetime import datetime
 
 # Add the project root directory to sys.path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,17 +24,22 @@ from rss_app.models import Source, News
 
 list_of_rss_urls = [x for x in Source.objects.all()]
 
-def download_image(url, path= './'):
+def download_image(url, path='photo_uploads/'):
+    # Path to the media directory for storing images
     photo_dir = os.path.join(settings.MEDIA_ROOT, path)
     os.makedirs(photo_dir, exist_ok=True)
 
+    # Download the image
     img_data = requests.get(url).content
     filename = url.split('/')[-1]
     photo_path = os.path.join(photo_dir, filename)
 
+    # Save the image locally
     with open(photo_path, 'wb') as handler:
         handler.write(img_data)
-        return f"{path}/{filename}"
+    
+    # Return the relative path to be stored in the database
+    return os.path.join(path, filename)
     
 while True:
     for feed_url in list_of_rss_urls:
@@ -43,6 +50,10 @@ while True:
             for entry in feed.entries:
                 # print(entry.keys())
 
+
+                pubDate = entry.get("published", "")
+                parsed_datetime = datetime.strptime(pubDate, '%a, %d %b %Y %H:%M:%S %Z')
+                formatted_datetime = parsed_datetime.replace(tzinfo=UTC).strftime('%Y-%m-%d %H:%M:%S%z')
 
                 guid = entry.get('id', '')
                 title = entry.get("title", "")
@@ -61,17 +72,16 @@ while True:
                 link = entry.get("link", "")
                 
                 if image:
-                    photo_db = download_image(image, f"photo_uploads")
+                    photo_db = download_image(image)
 
 
                 # FOR NEWS
-                # source_name = feed.feed.get('title', '')
-                # source_language = feed.feed.get('language', '')
-                # source = Source.objects.filter(name=source_name, language=source_language).first()
                 if not News.objects.filter(source=source, guid=guid).first():
                     news_item = News.objects.create(source=source, guid=guid, title=title, summary=summary, content=content,
-                    photo = photo_db, url=link)
+                    photo = photo_db, url=link, pubDate=formatted_datetime)
                     news_item.save()
+
+
                 # FOR SOURCE----->
                 # source_name = feed.feed.get('title', '')
                 # source_link = feed.feed.get('link', '')
@@ -88,15 +98,6 @@ while True:
                 #     language=source_language.split('-')[0], icon = icon_db)
                 #     source_item.save()
 
-                
-
-                
-
-
-
-
-
-
                 # print('source_name', source_name)
                 # print('source_link', source_link)
                 # print('source_language', source_language.split('-')[0])
@@ -108,8 +109,6 @@ while True:
                 # print('image', image)
                 # print('link', link)
                 
-
-                print("*"*50)
             
         else:
             print('smth went wrong')
