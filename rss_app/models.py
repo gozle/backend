@@ -30,6 +30,8 @@ class News(models.Model):
     url = models.URLField()
     view = models.IntegerField(default=0)
     pubDate = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name_plural = 'News'
