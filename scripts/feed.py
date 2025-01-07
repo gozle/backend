@@ -24,7 +24,6 @@ django.setup()
 from rss_app.models import Source, News
 
 
-list_of_rss_urls = [x for x in Source.objects.all()]
 
 def download_image(url, path='photo_uploads/'):
     # Path to the media directory for storing images
@@ -44,7 +43,7 @@ def download_image(url, path='photo_uploads/'):
     return os.path.join(path, filename)
     
 while True:
-    for feed_url in list_of_rss_urls:
+    for feed_url in Source.objects.all():
         feed = feedparser.parse(feed_url.rss_url)
         
         source = feed_url
