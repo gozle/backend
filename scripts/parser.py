@@ -96,6 +96,7 @@ while True:
                     news_item = News.objects.create(source=source, guid=guid, title=title, summary=summary, content=content,
                     photo = photo_db, url=link, pubDate=parsed_datetime)
                     news_item.save()
+                    print('NEW NEWS SAVED',news_item.title)
 
 
                 # FOR SOURCE----->

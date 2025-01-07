@@ -5,3 +5,5 @@ static
 staticfiles
 _/photo_uploads/
 _/icon_uploads/
+__pycache__
+venv

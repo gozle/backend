@@ -39,7 +39,7 @@ source_param = openapi.Parameter(
     manual_parameters=[language_param, search_param, order_param, page_param, page_size_param, source_param]
 )
 @api_view(['GET'])
-def newsList(request):
+def news_list(request):
     news = News.objects.all() 
     # Searching
     search_query = request.query_params.get('search', None)
@@ -76,7 +76,7 @@ def newsList(request):
 
 
 @api_view(['GET'])
-def newsDetail(request,pk):
+def news_detail(request,pk):
     new = News.objects.get(pk=pk)
     new.view +=1
     new.save()
@@ -92,7 +92,7 @@ def newsDetail(request,pk):
     manual_parameters=[language_param, search_param, page_param, page_size_param]
 )
 @api_view(['GET'])
-def sourceList(request):
+def source_list(request):
     source = Source.objects.all()
     # Searching
     search_query = request.query_params.get('search',None)
@@ -113,7 +113,7 @@ def sourceList(request):
 
 
 @api_view(['GET'])
-def sourceDetail(request,pk):
+def source_detail(request,pk):
     source = Source.objects.get(pk=pk)
     serializer = SourceSerializer(source, context={'request': request})
     return Response(
