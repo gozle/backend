@@ -2,6 +2,6 @@ db.sqlite3
 .idea
 media
 static
+staticfiles
 _/photo_uploads/
 _/icon_uploads/
-staticfiles
